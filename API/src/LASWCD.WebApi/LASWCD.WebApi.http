@@ -1,0 +1,6 @@
+@LASWCD.WebApi_HostAddress = http://localhost:5240
+
+GET {{LASWCD.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

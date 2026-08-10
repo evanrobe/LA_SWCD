@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\LASWCD.Managers\LASWCD.Managers.csproj" />
+    <ProjectReference Include="..\LASWCD.CrossCutting\LASWCD.CrossCutting.csproj" />
+    <ProjectReference Include="..\LASWCD.Domain\LASWCD.Domain.csproj" />
+    <ProjectReference Include="..\LASWCD.Infrastructure\LASWCD.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

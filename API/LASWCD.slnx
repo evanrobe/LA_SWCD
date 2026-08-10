@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LASWCD.CrossCutting/LASWCD.CrossCutting.csproj" />
+    <Project Path="src/LASWCD.Domain/LASWCD.Domain.csproj" />
+    <Project Path="src/LASWCD.Infrastructure/LASWCD.Infrastructure.csproj" />
+    <Project Path="src/LASWCD.Managers/LASWCD.Managers.csproj" />
+    <Project Path="src/LASWCD.WebApi/LASWCD.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LASWCD.Tests/LASWCD.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,24 @@
+# Version control / editor / Claude
+.git
+.gitignore
+.idea
+.vscode
+.claude
+
+# .NET build output (rebuilt inside the image)
+**/bin/
+**/obj/
+**/.vs/
+*.user
+
+# Node build output / dependencies (rebuilt inside the image)
+**/node_modules/
+FrontEnd/dist/
+FrontEnd/dist-ssr/
+**/*.local
+**/npm-debug.log*
+
+# Misc
+**/*.log
+Dockerfile
+.dockerignore

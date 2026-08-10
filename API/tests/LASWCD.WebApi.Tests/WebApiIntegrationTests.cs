@@ -46,4 +46,15 @@ public class WebApiIntegrationTests(WebApplicationFactory<Program> factory) : IC
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Get_SwaggerJson_ReturnsSuccess_InProductionEnvironment()
+    {
+        // Swagger must stay reachable in the production Docker image, not just in local development.
+        var client = factory.WithWebHostBuilder(builder => builder.UseEnvironment("Production")).CreateClient();
+
+        var response = await client.GetAsync("/swagger/v1/swagger.json");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 }

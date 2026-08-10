@@ -27,20 +27,27 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseCrossCutting();
 
-if (app.Environment.IsDevelopment())
+// Enabled in all environments (including the production container) so the API stays self-documenting
+// wherever it's deployed, not just in local development.
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LA SWCD API v1");
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "LA SWCD API v1");
+});
 
 app.UseHttpsRedirection();
+
+// Serves the React production build published into wwwroot alongside the API.
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Requests that don't match a controller, Swagger, or a static file fall back to the SPA's index.html
+// so client-side routing (React Router) can handle them.
+app.MapFallbackToFile("index.html");
 
 app.Run();
 

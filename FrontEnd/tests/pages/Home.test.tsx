@@ -58,6 +58,21 @@ describe('Home', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
+  it('automatically selects the first character once the list loads', () => {
+    render(<Home />)
+
+    expect(screen.getByRole('button', { name: 'Luke Skywalker' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Leia Organa' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('does not select anything when the list has no characters', () => {
+    mockedUseCharacters.mockReturnValue({ data: [] as typeof CHARACTERS } as ReturnType<typeof useCharacters>)
+
+    render(<Home />)
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
   it('allows selecting a single character from the list', async () => {
     const user = userEvent.setup()
 
@@ -66,15 +81,15 @@ describe('Home', () => {
     const lukeButton = screen.getByRole('button', { name: 'Luke Skywalker' })
     const leiaButton = screen.getByRole('button', { name: 'Leia Organa' })
 
+    expect(lukeButton).toHaveAttribute('aria-pressed', 'true')
+
+    await user.click(leiaButton)
+    expect(leiaButton).toHaveAttribute('aria-pressed', 'true')
     expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
 
     await user.click(lukeButton)
     expect(lukeButton).toHaveAttribute('aria-pressed', 'true')
     expect(leiaButton).toHaveAttribute('aria-pressed', 'false')
-
-    await user.click(leiaButton)
-    expect(leiaButton).toHaveAttribute('aria-pressed', 'true')
-    expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
   })
 
   it('debounces search box input before calling useCharacters with the new term', async () => {

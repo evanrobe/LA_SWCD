@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useCharacters } from '../../hooks/useCharacters'
 import DatapadHeader from './components/DatapadHeader'
@@ -15,6 +15,10 @@ function Home() {
   const [debouncedSearchTerm] = useDebounce(searchTerm, SEARCH_DEBOUNCE_MS)
   const { data } = useCharacters(debouncedSearchTerm)
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setSelectedCharacterId(data && data.length > 0 ? data[0].id : null)
+  }, [data])
 
   return (
     <main className={styles.page}>

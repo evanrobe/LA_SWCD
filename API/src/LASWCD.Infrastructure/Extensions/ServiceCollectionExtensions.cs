@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var swapiBaseUrl = configuration["Swapi:BaseUrl"] ?? "https://www.swapi.tech/api/";
+        var swapiBaseUrl = configuration["Swapi:BaseUrl"] ?? "https://swapi.info/api/";
 
         services.AddHttpClient<ISwapiClient, SwapiClient>(client =>
         {

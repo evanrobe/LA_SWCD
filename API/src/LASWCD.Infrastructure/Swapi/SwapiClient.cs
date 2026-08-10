@@ -6,24 +6,24 @@ using LASWCD.Infrastructure.Swapi.Models;
 
 namespace LASWCD.Infrastructure.Swapi;
 
+// swapi.info serves a static, unfiltered dump per resource; there is no query-param search support.
 public class SwapiClient(HttpClient httpClient) : ISwapiClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    public async Task<IEnumerable<Character>> SearchPeopleAsync(string? name, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Character>> GetPeopleAsync(CancellationToken cancellationToken = default)
     {
-        var requestUri = $"people/?name={Uri.EscapeDataString(name ?? string.Empty)}";
-        var response = await httpClient.GetFromJsonAsync<SwapiSearchResponse>(requestUri, JsonOptions, cancellationToken);
+        var people = await httpClient.GetFromJsonAsync<List<SwapiPerson>>("people/", JsonOptions, cancellationToken);
 
-        if (response?.Result is null)
+        if (people is null)
         {
             return [];
         }
 
-        return response.Result.Select(result => new Character
+        return people.Select(person => new Character
         {
-            Id = result.Uid,
-            Name = result.Properties.Name
+            Id = person.Url.TrimEnd('/').Split('/').Last(),
+            Name = person.Name
         });
     }
 }

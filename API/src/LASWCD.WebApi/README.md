@@ -42,12 +42,20 @@ dotnet watch run --launch-profile http
 
 ## Configuration
 
-- `Swapi:BaseUrl` (`appsettings.json`) — base URL for the SWAPI client, defaults to `https://www.swapi.tech/api/`
+- `Swapi:BaseUrl` (`appsettings.json`) — base URL for the SWAPI client, defaults to `https://swapi.info/api/`. This mirror has no server-side query support — `ISwapiClient` just returns the full people list; `CharacterManager` does the name filtering.
 
 ## Tests
 
-From the solution root (`API/`):
+Each `src/` project has a matching `tests/<ProjectName>.Tests` project (e.g. `LASWCD.Managers` ↔ `LASWCD.Managers.Tests`).
+
+From the solution root (`API/`), run everything:
 
 ```
 dotnet test
+```
+
+Or scope to one project, e.g.:
+
+```
+dotnet test tests/LASWCD.Managers.Tests
 ```

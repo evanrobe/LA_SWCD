@@ -6,8 +6,15 @@ namespace LASWCD.Managers;
 
 public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
 {
-    public Task<IEnumerable<Character>> SearchAsync(string? name, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Character>> SearchAsync(string? name, CancellationToken cancellationToken = default)
     {
-        return swapiClient.SearchPeopleAsync(name, cancellationToken);
+        var people = await swapiClient.GetPeopleAsync(cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return people;
+        }
+
+        return people.Where(person => person.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
     }
 }

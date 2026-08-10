@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 
-namespace LASWCD.Tests.Controllers;
+namespace LASWCD.WebApi.Tests.Controllers;
 
 public class CharactersControllerTests
 {

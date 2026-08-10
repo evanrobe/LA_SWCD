@@ -1,6 +1,23 @@
 .container {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+/* Invisible twin of CharacterList's ".label" — reserves the same height so the
+   boxes below it line up, without hardcoding the label's rendered height as a margin. */
+.spacer {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+  visibility: hidden;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
   gap: 24px;
   border: 1px solid #d5d4d8;
   border-radius: 6px;

@@ -33,20 +33,26 @@ function CharacterDetail({ character }: CharacterDetailProps) {
 
   return (
     <section className={styles.container}>
-      <div className={styles.identity}>
-        <span className={styles.avatar} aria-hidden="true">
-          <svg viewBox="0 0 24 24" className={styles.avatarIcon}>
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-          </svg>
-        </span>
-        <h2 className={styles.name}>{character?.name}</h2>
-      </div>
+      <p className={styles.spacer} aria-hidden="true">
+        &nbsp;
+      </p>
 
-      <div className={styles.panels}>
-        <DetailPanel title="Attributes" rows={attributeRows} />
-        <DetailPanel title="Species" rows={speciesRows} showHeading heading={character?.species?.name} />
-        <DetailPanel title="Homeworld" rows={homeworldRows} showHeading heading={character?.homeworld?.name} />
+      <div className={styles.box}>
+        <div className={styles.identity}>
+          <span className={styles.avatar} aria-hidden="true">
+            <svg viewBox="0 0 24 24" className={styles.avatarIcon}>
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+            </svg>
+          </span>
+          <h2 className={styles.name}>{character?.name}</h2>
+        </div>
+
+        <div className={styles.panels}>
+          <DetailPanel title="Attributes" rows={attributeRows} />
+          <DetailPanel title="Species" rows={speciesRows} showHeading heading={character?.species?.name} />
+          <DetailPanel title="Homeworld" rows={homeworldRows} showHeading heading={character?.homeworld?.name} />
+        </div>
       </div>
     </section>
   )

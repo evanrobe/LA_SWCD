@@ -75,11 +75,22 @@ public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
                     Name = homeworld.Name,
                     Climate = homeworld.Climate,
                     Terrain = homeworld.Terrain,
-                    Population = int.TryParse(homeworld.Population, out var population) ? population : null
+                    Population = int.TryParse(homeworld.Population, out var population) ? population : null,
+                    SurfaceWater = WithPercent(homeworld.SurfaceWater),
+                    Diameter = WithFormattedUnit(homeworld.Diameter, "km"),
+                    RotationPeriod = WithUnit(homeworld.RotationPeriod, "hr"),
+                    OrbitalPeriod = WithUnit(homeworld.OrbitalPeriod, "d"),
+                    Gravity = homeworld.Gravity
                 }
         };
     }
 
     private static string? WithUnit(string? value, string unit) =>
         decimal.TryParse(value, out _) ? $"{value} {unit}" : value;
+
+    private static string? WithPercent(string? value) =>
+        decimal.TryParse(value, out _) ? $"{value}%" : value;
+
+    private static string? WithFormattedUnit(string? value, string unit) =>
+        decimal.TryParse(value, out var number) ? $"{number:N0} {unit}" : value;
 }

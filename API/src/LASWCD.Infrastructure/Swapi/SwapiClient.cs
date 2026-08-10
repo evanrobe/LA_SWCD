@@ -54,7 +54,12 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
                 Name = planet.Name,
                 Climate = planet.Climate,
                 Terrain = planet.Terrain,
-                Population = planet.Population
+                Population = planet.Population,
+                SurfaceWater = planet.SurfaceWater,
+                Diameter = planet.Diameter,
+                RotationPeriod = planet.RotationPeriod,
+                OrbitalPeriod = planet.OrbitalPeriod,
+                Gravity = planet.Gravity
             };
     }
 

@@ -29,6 +29,11 @@ function CharacterDetail({ character }: CharacterDetailProps) {
     { label: 'Population', value: character?.homeworld?.population?.toLocaleString() },
     { label: 'Terrain', value: character?.homeworld?.terrain },
     { label: 'Climate', value: character?.homeworld?.climate },
+    { label: 'Surface water', value: character?.homeworld?.surfaceWater },
+    { label: 'Diameter', value: character?.homeworld?.diameter },
+    { label: 'Rotation period', value: character?.homeworld?.rotationPeriod },
+    { label: 'Orbital period', value: character?.homeworld?.orbitalPeriod },
+    { label: 'Gravity', value: character?.homeworld?.gravity },
   ]
 
   return (

@@ -99,7 +99,12 @@ public class CharacterManagerTests
             Name = "Tatooine",
             Climate = "arid",
             Terrain = "desert",
-            Population = "200000"
+            Population = "200000",
+            SurfaceWater = "1",
+            Diameter = "10465",
+            RotationPeriod = "23",
+            OrbitalPeriod = "304",
+            Gravity = "1 standard"
         };
 
         var swapiClientMock = new Mock<ISwapiClient>();
@@ -134,6 +139,11 @@ public class CharacterManagerTests
         Assert.Equal("arid", result.Homeworld.Climate);
         Assert.Equal("desert", result.Homeworld.Terrain);
         Assert.Equal(200000, result.Homeworld.Population);
+        Assert.Equal("1%", result.Homeworld.SurfaceWater);
+        Assert.Equal("10,465 km", result.Homeworld.Diameter);
+        Assert.Equal("23 hr", result.Homeworld.RotationPeriod);
+        Assert.Equal("304 d", result.Homeworld.OrbitalPeriod);
+        Assert.Equal("1 standard", result.Homeworld.Gravity);
     }
 
     [Fact]

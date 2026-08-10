@@ -27,6 +27,11 @@ export interface CharacterHomeworld {
   climate: string | null
   terrain: string | null
   population: number | null
+  surfaceWater: string | null
+  diameter: string | null
+  rotationPeriod: string | null
+  orbitalPeriod: string | null
+  gravity: string | null
 }
 
 export interface CharacterDetail {

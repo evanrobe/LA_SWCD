@@ -54,6 +54,11 @@ const LUKE_DETAIL = {
     climate: 'arid',
     terrain: 'desert',
     population: 200000,
+    surfaceWater: '1%',
+    diameter: '10,465 km',
+    rotationPeriod: '23 hr',
+    orbitalPeriod: '304 d',
+    gravity: '1 standard',
   },
 }
 

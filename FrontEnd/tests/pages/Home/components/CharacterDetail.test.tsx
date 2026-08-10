@@ -27,6 +27,11 @@ const LUKE = {
     climate: 'arid',
     terrain: 'desert',
     population: 200000,
+    surfaceWater: '1%',
+    diameter: '10,465 km',
+    rotationPeriod: '23 hr',
+    orbitalPeriod: '304 d',
+    gravity: '1 standard',
   },
 }
 
@@ -57,6 +62,11 @@ describe('CharacterDetail', () => {
     expect(screen.getByText('200,000')).toBeInTheDocument()
     expect(screen.getByText('desert')).toBeInTheDocument()
     expect(screen.getByText('arid')).toBeInTheDocument()
+    expect(screen.getByText('1%')).toBeInTheDocument()
+    expect(screen.getByText('10,465 km')).toBeInTheDocument()
+    expect(screen.getByText('23 hr')).toBeInTheDocument()
+    expect(screen.getByText('304 d')).toBeInTheDocument()
+    expect(screen.getByText('1 standard')).toBeInTheDocument()
   })
 
   it('renders an empty state when no character is selected', () => {

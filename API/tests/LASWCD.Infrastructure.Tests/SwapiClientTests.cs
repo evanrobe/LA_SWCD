@@ -46,7 +46,12 @@ public class SwapiClientTests
           "name": "Tatooine",
           "climate": "arid",
           "terrain": "desert",
-          "population": "200000"
+          "population": "200000",
+          "surface_water": "1",
+          "diameter": "10465",
+          "rotation_period": "23",
+          "orbital_period": "304",
+          "gravity": "1 standard"
         }
         """;
 
@@ -132,6 +137,11 @@ public class SwapiClientTests
         Assert.Equal("arid", result.Climate);
         Assert.Equal("desert", result.Terrain);
         Assert.Equal("200000", result.Population);
+        Assert.Equal("1", result.SurfaceWater);
+        Assert.Equal("10465", result.Diameter);
+        Assert.Equal("23", result.RotationPeriod);
+        Assert.Equal("304", result.OrbitalPeriod);
+        Assert.Equal("1 standard", result.Gravity);
     }
 
     private class StubHttpMessageHandler(HttpStatusCode statusCode, string jsonResponse) : HttpMessageHandler

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LASWCD.Domain.Entities;
@@ -13,17 +14,76 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
 
     public async Task<IEnumerable<Character>> GetPeopleAsync(CancellationToken cancellationToken = default)
     {
-        var people = await httpClient.GetFromJsonAsync<List<SwapiPerson>>("people/", JsonOptions, cancellationToken);
+        var people = await GetOrDefaultAsync<List<SwapiPerson>>("people/", cancellationToken);
 
-        if (people is null)
+        return people?.Select(ToCharacter) ?? [];
+    }
+
+    public async Task<Character?> GetPersonAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var person = await GetOrDefaultAsync<SwapiPerson>($"people/{id}/", cancellationToken);
+
+        return person is null ? null : ToCharacter(person);
+    }
+
+    public async Task<Species?> GetSpeciesAsync(string url, CancellationToken cancellationToken = default)
+    {
+        var species = await GetOrDefaultAsync<SwapiSpecies>(url, cancellationToken);
+
+        return species is null
+            ? null
+            : new Species
+            {
+                Name = species.Name,
+                Classification = species.Classification,
+                Designation = species.Designation,
+                AverageHeight = species.AverageHeight,
+                AverageLifespan = species.AverageLifespan,
+                Language = species.Language
+            };
+    }
+
+    public async Task<Homeworld?> GetHomeworldAsync(string url, CancellationToken cancellationToken = default)
+    {
+        var planet = await GetOrDefaultAsync<SwapiPlanet>(url, cancellationToken);
+
+        return planet is null
+            ? null
+            : new Homeworld
+            {
+                Name = planet.Name,
+                Climate = planet.Climate,
+                Terrain = planet.Terrain,
+                Population = planet.Population
+            };
+    }
+
+    private async Task<T?> GetOrDefaultAsync<T>(string requestUri, CancellationToken cancellationToken)
+    {
+        using var response = await httpClient.GetAsync(requestUri, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            return [];
+            return default;
         }
 
-        return people.Select(person => new Character
-        {
-            Id = person.Url.TrimEnd('/').Split('/').Last(),
-            Name = person.Name
-        });
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<T>(JsonOptions, cancellationToken);
     }
+
+    private static Character ToCharacter(SwapiPerson person) => new()
+    {
+        Id = person.Url.TrimEnd('/').Split('/').Last(),
+        Name = person.Name,
+        BirthYear = person.BirthYear,
+        Gender = person.Gender,
+        Height = person.Height,
+        Mass = person.Mass,
+        HairColor = person.HairColor,
+        EyeColor = person.EyeColor,
+        SkinColor = person.SkinColor,
+        HomeworldUrl = person.Homeworld,
+        SpeciesUrls = person.Species
+    };
 }

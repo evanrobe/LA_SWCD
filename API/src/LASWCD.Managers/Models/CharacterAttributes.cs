@@ -1,11 +1,7 @@
-namespace LASWCD.Domain.Entities;
+namespace LASWCD.Managers.Models;
 
-public class Character
+public class CharacterAttributes
 {
-    public required string Id { get; set; }
-
-    public required string Name { get; set; }
-
     public string? BirthYear { get; set; }
 
     public string? Gender { get; set; }
@@ -19,8 +15,4 @@ public class Character
     public string? EyeColor { get; set; }
 
     public string? SkinColor { get; set; }
-
-    public string? HomeworldUrl { get; set; }
-
-    public IReadOnlyList<string> SpeciesUrls { get; set; } = [];
 }

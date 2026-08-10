@@ -55,4 +55,108 @@ public class CharacterManagerTests
 
         Assert.Equal(["Anakin Skywalker", "Leia Organa", "Luke Skywalker"], result.Select(c => c.Name));
     }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsNull_WhenSwapiClientReturnsNoPerson()
+    {
+        var swapiClientMock = new Mock<ISwapiClient>();
+        swapiClientMock.Setup(c => c.GetPersonAsync("9999", It.IsAny<CancellationToken>())).ReturnsAsync((Character?)null);
+        var manager = new CharacterManager(swapiClientMock.Object);
+
+        var result = await manager.GetByIdAsync("9999");
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ComposesAttributesSpeciesAndHomeworld_WithUnitsAppended()
+    {
+        var luke = new Character
+        {
+            Id = "1",
+            Name = "Luke Skywalker",
+            BirthYear = "19BBY",
+            Gender = "male",
+            Height = "172",
+            Mass = "77",
+            HairColor = "blond",
+            EyeColor = "blue",
+            SkinColor = "fair",
+            HomeworldUrl = "https://swapi.info/api/planets/1",
+            SpeciesUrls = ["https://swapi.info/api/species/1"]
+        };
+        var human = new Species
+        {
+            Name = "Human",
+            Classification = "mammal",
+            Designation = "sentient",
+            AverageHeight = "180",
+            AverageLifespan = "120",
+            Language = "Galactic Basic"
+        };
+        var tatooine = new Homeworld
+        {
+            Name = "Tatooine",
+            Climate = "arid",
+            Terrain = "desert",
+            Population = "200000"
+        };
+
+        var swapiClientMock = new Mock<ISwapiClient>();
+        swapiClientMock.Setup(c => c.GetPersonAsync("1", It.IsAny<CancellationToken>())).ReturnsAsync(luke);
+        swapiClientMock.Setup(c => c.GetSpeciesAsync(luke.SpeciesUrls[0], It.IsAny<CancellationToken>())).ReturnsAsync(human);
+        swapiClientMock.Setup(c => c.GetHomeworldAsync(luke.HomeworldUrl!, It.IsAny<CancellationToken>())).ReturnsAsync(tatooine);
+        var manager = new CharacterManager(swapiClientMock.Object);
+
+        var result = await manager.GetByIdAsync("1");
+
+        Assert.NotNull(result);
+        Assert.Equal("1", result.Id);
+        Assert.Equal("Luke Skywalker", result.Name);
+        Assert.Equal("19BBY", result.Attributes.BirthYear);
+        Assert.Equal("male", result.Attributes.Gender);
+        Assert.Equal("172 cm", result.Attributes.Height);
+        Assert.Equal("77 kg", result.Attributes.Mass);
+        Assert.Equal("blond", result.Attributes.HairColor);
+        Assert.Equal("blue", result.Attributes.EyeColor);
+        Assert.Equal("fair", result.Attributes.SkinColor);
+
+        Assert.NotNull(result.Species);
+        Assert.Equal("Human", result.Species.Name);
+        Assert.Equal("mammal", result.Species.Classification);
+        Assert.Equal("sentient", result.Species.Designation);
+        Assert.Equal("180 cm", result.Species.AverageHeight);
+        Assert.Equal("120 years", result.Species.AverageLifespan);
+        Assert.Equal("Galactic Basic", result.Species.Language);
+
+        Assert.NotNull(result.Homeworld);
+        Assert.Equal("Tatooine", result.Homeworld.Name);
+        Assert.Equal("arid", result.Homeworld.Climate);
+        Assert.Equal("desert", result.Homeworld.Terrain);
+        Assert.Equal(200000, result.Homeworld.Population);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_LeavesSpeciesAndHomeworldNull_WhenPersonHasNoUrlsForThem()
+    {
+        var droid = new Character
+        {
+            Id = "2",
+            Name = "C-3PO",
+            HomeworldUrl = null,
+            SpeciesUrls = []
+        };
+
+        var swapiClientMock = new Mock<ISwapiClient>();
+        swapiClientMock.Setup(c => c.GetPersonAsync("2", It.IsAny<CancellationToken>())).ReturnsAsync(droid);
+        var manager = new CharacterManager(swapiClientMock.Object);
+
+        var result = await manager.GetByIdAsync("2");
+
+        Assert.NotNull(result);
+        Assert.Null(result.Species);
+        Assert.Null(result.Homeworld);
+        swapiClientMock.Verify(c => c.GetSpeciesAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        swapiClientMock.Verify(c => c.GetHomeworldAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

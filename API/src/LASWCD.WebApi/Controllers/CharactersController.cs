@@ -1,5 +1,5 @@
-using LASWCD.Domain.Entities;
 using LASWCD.Managers.Interfaces;
+using LASWCD.Managers.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LASWCD.WebApi.Controllers;
@@ -12,5 +12,18 @@ public class CharactersController(ICharacterManager characterManager) : Controll
     public async Task<ActionResult<IEnumerable<Character>>> Search([FromQuery] string? name, CancellationToken cancellationToken)
     {
         return Ok(await characterManager.SearchAsync(name, cancellationToken));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CharacterDetail>> GetById(string id, CancellationToken cancellationToken)
+    {
+        var character = await characterManager.GetByIdAsync(id, cancellationToken);
+
+        if (character is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(character);
     }
 }

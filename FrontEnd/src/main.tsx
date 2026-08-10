@@ -5,15 +5,20 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
+import ErrorDialog from './components/ErrorDialog.tsx'
+import GlobalLoadingBoundary from './components/GlobalLoadingBoundary.tsx'
 import { queryClient } from './api/queryClient.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <ErrorDialog />
+        <GlobalLoadingBoundary>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </GlobalLoadingBoundary>
       </QueryClientProvider>
     </ErrorBoundary>
   </StrictMode>,

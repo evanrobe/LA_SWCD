@@ -1,8 +1,30 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Home from '../../src/pages/Home/Home'
+import { useCharacters } from '../../src/api/hooks/useCharacters'
+
+vi.mock('../../src/api/hooks/useCharacters', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/api/hooks/useCharacters')>()
+  return {
+    ...actual,
+    useCharacters: vi.fn(),
+  }
+})
+
+const mockedUseCharacters = vi.mocked(useCharacters)
+
+const CHARACTERS = [
+  { id: '1', name: 'Luke Skywalker' },
+  { id: '2', name: 'Leia Organa' },
+]
 
 describe('Home', () => {
+  beforeEach(() => {
+    mockedUseCharacters.mockReset()
+    mockedUseCharacters.mockReturnValue({ data: CHARACTERS } as ReturnType<typeof useCharacters>)
+  })
+
   it('renders the datapad header and search box', () => {
     render(<Home />)
 
@@ -10,20 +32,48 @@ describe('Home', () => {
     expect(screen.getByRole('searchbox', { name: 'Search characters' })).toBeInTheDocument()
   })
 
-  it('renders the character list and detail panels', () => {
+  it('renders the detail panels and the films/starships/vehicles sections', () => {
     render(<Home />)
 
-    expect(screen.getByRole('heading', { name: 'Characters' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Attributes' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Species' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Homeworld' })).toBeInTheDocument()
-  })
-
-  it('renders the films, starships, and vehicles sections', () => {
-    render(<Home />)
-
     expect(screen.getByRole('heading', { name: 'Films' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Starships' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Vehicles' })).toBeInTheDocument()
+  })
+
+  it('renders the fetched characters in the list', () => {
+    render(<Home />)
+
+    expect(screen.getByRole('button', { name: 'Luke Skywalker' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Leia Organa' })).toBeInTheDocument()
+  })
+
+  it('renders no characters when data has not loaded yet', () => {
+    mockedUseCharacters.mockReturnValue({ data: undefined } as ReturnType<typeof useCharacters>)
+
+    render(<Home />)
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('allows selecting a single character from the list', async () => {
+    const user = userEvent.setup()
+
+    render(<Home />)
+
+    const lukeButton = screen.getByRole('button', { name: 'Luke Skywalker' })
+    const leiaButton = screen.getByRole('button', { name: 'Leia Organa' })
+
+    expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(lukeButton)
+    expect(lukeButton).toHaveAttribute('aria-pressed', 'true')
+    expect(leiaButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(leiaButton)
+    expect(leiaButton).toHaveAttribute('aria-pressed', 'true')
+    expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
   })
 })

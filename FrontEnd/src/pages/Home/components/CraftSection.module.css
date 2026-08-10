@@ -16,5 +16,7 @@
 .list {
   border: 1px solid #d5d4d8;
   border-radius: 6px;
-  min-height: 220px;
+  height: 220px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }

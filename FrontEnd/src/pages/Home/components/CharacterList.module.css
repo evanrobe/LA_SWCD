@@ -19,6 +19,36 @@
   padding: 0;
   border: 1px solid #d5d4d8;
   border-radius: 6px;
-  min-height: 420px;
+  height: 420px;
   overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #f4f3f6;
+}
+
+.itemSelected {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  background: #e5e4e7;
 }

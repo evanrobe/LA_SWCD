@@ -1,7 +1,15 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
+
+vi.mock('../src/api/hooks/useCharacters', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../src/api/hooks/useCharacters')>()
+  return {
+    ...actual,
+    useCharacters: vi.fn(() => ({ data: [] })),
+  }
+})
 
 describe('App routing', () => {
   it('renders the homepage at /', () => {

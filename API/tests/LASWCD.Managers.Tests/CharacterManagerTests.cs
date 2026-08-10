@@ -43,4 +43,16 @@ public class CharacterManagerTests
         Assert.Contains(result, c => c.Id == "5" && c.Name == "Leia Organa");
         Assert.Contains(result, c => c.Id == "11" && c.Name == "Anakin Skywalker");
     }
+
+    [Fact]
+    public async Task SearchAsync_ReturnsResultsSortedByNameCaseInsensitively()
+    {
+        var swapiClientMock = new Mock<ISwapiClient>();
+        swapiClientMock.Setup(c => c.GetPeopleAsync(It.IsAny<CancellationToken>())).ReturnsAsync(AllPeople);
+        var manager = new CharacterManager(swapiClientMock.Object);
+
+        var result = (await manager.SearchAsync(null)).ToList();
+
+        Assert.Equal(["Anakin Skywalker", "Leia Organa", "Luke Skywalker"], result.Select(c => c.Name));
+    }
 }

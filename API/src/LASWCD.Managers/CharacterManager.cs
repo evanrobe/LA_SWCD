@@ -10,11 +10,11 @@ public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
     {
         var people = await swapiClient.GetPeopleAsync(cancellationToken);
 
-        if (string.IsNullOrWhiteSpace(name))
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            return people;
+            people = people.Where(person => person.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        return people.Where(person => person.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+        return people.OrderBy(person => person.Name, StringComparer.OrdinalIgnoreCase);
     }
 }

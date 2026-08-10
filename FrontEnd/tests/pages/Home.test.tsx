@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Home from '../../src/pages/Home/Home'
@@ -75,5 +75,20 @@ describe('Home', () => {
     await user.click(leiaButton)
     expect(leiaButton).toHaveAttribute('aria-pressed', 'true')
     expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('debounces search box input before calling useCharacters with the new term', async () => {
+    const user = userEvent.setup()
+
+    render(<Home />)
+
+    expect(mockedUseCharacters).toHaveBeenLastCalledWith('')
+
+    await user.type(screen.getByRole('searchbox', { name: 'Search characters' }), 'leia')
+
+    // Still debouncing immediately after typing — no call with the full term yet.
+    expect(mockedUseCharacters).not.toHaveBeenCalledWith('leia')
+
+    await waitFor(() => expect(mockedUseCharacters).toHaveBeenLastCalledWith('leia'), { timeout: 1000 })
   })
 })

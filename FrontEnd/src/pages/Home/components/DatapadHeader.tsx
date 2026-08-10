@@ -1,6 +1,11 @@
 import styles from './DatapadHeader.module.css'
 
-function DatapadHeader() {
+interface DatapadHeaderProps {
+  searchTerm: string
+  onSearchTermChange: (value: string) => void
+}
+
+function DatapadHeader({ searchTerm, onSearchTermChange }: DatapadHeaderProps) {
   return (
     <header className={styles.header}>
       <h1 className={styles.title}>Star Wars Character Datapad</h1>
@@ -10,7 +15,14 @@ function DatapadHeader() {
           <circle cx="11" cy="11" r="7" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-        <input type="search" className={styles.searchInput} placeholder="Search characters" aria-label="Search characters" />
+        <input
+          type="search"
+          className={styles.searchInput}
+          placeholder="Search characters"
+          aria-label="Search characters"
+          value={searchTerm}
+          onChange={(event) => onSearchTermChange(event.target.value)}
+        />
       </div>
     </header>
   )

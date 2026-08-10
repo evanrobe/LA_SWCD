@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useIsBusy } from '../hooks/useIsBusy'
+import { takeElementFocusedBeforeBusy } from '../hooks/globalBusyStore'
 import LoadingOverlay from './LoadingOverlay'
 
 interface GlobalLoadingBoundaryProps {
@@ -8,6 +9,12 @@ interface GlobalLoadingBoundaryProps {
 
 function GlobalLoadingBoundary({ children }: GlobalLoadingBoundaryProps) {
   const isBusy = useIsBusy()
+
+  useEffect(() => {
+    if (!isBusy) {
+      takeElementFocusedBeforeBusy()?.focus()
+    }
+  }, [isBusy])
 
   return (
     <>

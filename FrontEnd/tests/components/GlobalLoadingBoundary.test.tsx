@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import GlobalLoadingBoundary from '../../src/components/GlobalLoadingBoundary'
 import { decrementBusyCount, incrementBusyCount, resetBusyCountForTests } from '../../src/hooks/globalBusyStore'
 
@@ -65,5 +65,29 @@ describe('GlobalLoadingBoundary', () => {
     })
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
+  it('refocuses the element that was focused before the busy state started, once it clears', () => {
+    render(
+      <GlobalLoadingBoundary>
+        <input aria-label="Search characters" />
+      </GlobalLoadingBoundary>,
+    )
+
+    const input = screen.getByRole('textbox', { name: 'Search characters' })
+    input.focus()
+    expect(input).toHaveFocus()
+
+    act(() => {
+      incrementBusyCount()
+    })
+
+    const focusSpy = vi.spyOn(input, 'focus')
+
+    act(() => {
+      decrementBusyCount()
+    })
+
+    expect(focusSpy).toHaveBeenCalledTimes(1)
   })
 })

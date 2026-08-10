@@ -1,25 +1,14 @@
-import { useIsFetching, useIsMutating } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { act, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
 import GlobalLoadingBoundary from '../../src/components/GlobalLoadingBoundary'
-
-vi.mock('@tanstack/react-query', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@tanstack/react-query')>()
-  return {
-    ...actual,
-    useIsFetching: vi.fn(),
-    useIsMutating: vi.fn(),
-  }
-})
-
-const mockedUseIsFetching = vi.mocked(useIsFetching)
-const mockedUseIsMutating = vi.mocked(useIsMutating)
+import { decrementBusyCount, incrementBusyCount, resetBusyCountForTests } from '../../src/hooks/globalBusyStore'
 
 describe('GlobalLoadingBoundary', () => {
-  it('renders children without the overlay when nothing is fetching or mutating', () => {
-    mockedUseIsFetching.mockReturnValue(0)
-    mockedUseIsMutating.mockReturnValue(0)
+  afterEach(() => {
+    resetBusyCountForTests()
+  })
 
+  it('renders children without the overlay when nothing is busy', () => {
     render(
       <GlobalLoadingBoundary>
         <p>content</p>
@@ -30,30 +19,51 @@ describe('GlobalLoadingBoundary', () => {
     expect(screen.getByText('content').closest('div')).not.toHaveAttribute('inert')
   })
 
-  it('shows the overlay and marks content inert while a query is fetching', () => {
-    mockedUseIsFetching.mockReturnValue(1)
-    mockedUseIsMutating.mockReturnValue(0)
-
+  it('shows the overlay and marks content inert while the busy count is above zero', () => {
     render(
       <GlobalLoadingBoundary>
         <p>content</p>
       </GlobalLoadingBoundary>,
     )
+
+    act(() => {
+      incrementBusyCount()
+    })
 
     expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByText('content').closest('div')).toHaveAttribute('inert')
+
+    act(() => {
+      decrementBusyCount()
+    })
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
-  it('shows the overlay while a mutation is in flight', () => {
-    mockedUseIsFetching.mockReturnValue(0)
-    mockedUseIsMutating.mockReturnValue(1)
-
+  it('stays busy while multiple actions overlap, until the last one finishes', () => {
     render(
       <GlobalLoadingBoundary>
         <p>content</p>
       </GlobalLoadingBoundary>,
     )
 
+    act(() => {
+      incrementBusyCount()
+      incrementBusyCount()
+    })
+
     expect(screen.getByRole('status')).toBeInTheDocument()
+
+    act(() => {
+      decrementBusyCount()
+    })
+
+    expect(screen.getByRole('status')).toBeInTheDocument()
+
+    act(() => {
+      decrementBusyCount()
+    })
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 })

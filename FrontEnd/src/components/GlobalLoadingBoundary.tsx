@@ -1,5 +1,5 @@
-import { useIsFetching, useIsMutating } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
+import { useIsBusy } from '../hooks/useIsBusy'
 import LoadingOverlay from './LoadingOverlay'
 
 interface GlobalLoadingBoundaryProps {
@@ -7,9 +7,7 @@ interface GlobalLoadingBoundaryProps {
 }
 
 function GlobalLoadingBoundary({ children }: GlobalLoadingBoundaryProps) {
-  const fetchingCount = useIsFetching()
-  const mutatingCount = useIsMutating()
-  const isBusy = fetchingCount > 0 || mutatingCount > 0
+  const isBusy = useIsBusy()
 
   return (
     <>

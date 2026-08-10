@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Home from '../../src/pages/Home/Home'
-import { useCharacters } from '../../src/api/hooks/useCharacters'
+import { useCharacters } from '../../src/hooks/useCharacters'
 
-vi.mock('../../src/api/hooks/useCharacters', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../src/api/hooks/useCharacters')>()
+vi.mock('../../src/hooks/useCharacters', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/hooks/useCharacters')>()
   return {
     ...actual,
     useCharacters: vi.fn(),

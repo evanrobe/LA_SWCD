@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCharacters } from '../../api/hooks/useCharacters'
+import { useCharacters } from '../../hooks/useCharacters'
 import DatapadHeader from './components/DatapadHeader'
 import CharacterList from './components/CharacterList'
 import CharacterDetail from './components/CharacterDetail'

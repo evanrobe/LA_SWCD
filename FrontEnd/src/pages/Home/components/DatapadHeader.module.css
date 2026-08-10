@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid #e5e4e7;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0;
+  text-align: left;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d5d4d8;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 260px;
+  margin-left: auto;
+}
+
+.searchIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #8b8894;
+  stroke-width: 2;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  flex: 1;
+  color: inherit;
+  background: transparent;
+}

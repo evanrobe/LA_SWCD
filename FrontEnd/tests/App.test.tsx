@@ -11,7 +11,7 @@ describe('App routing', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'LA SWCD' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Star Wars Character Datapad' })).toBeInTheDocument()
   })
 
   it('renders the not-found page for an unknown route', () => {

@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #57545e;
+  margin: 0;
+}
+
+.list {
+  border: 1px solid #d5d4d8;
+  border-radius: 6px;
+  min-height: 160px;
+}

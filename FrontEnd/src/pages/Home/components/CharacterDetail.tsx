@@ -1,20 +1,36 @@
+import type { CharacterDetail as CharacterDetailData } from '../../../api/types'
 import DetailPanel from './DetailPanel'
 import styles from './CharacterDetail.module.css'
 
-const ATTRIBUTE_ROWS = ['Birth year', 'Gender', 'Height', 'Mass', 'Eye color', 'Hair color', 'Skin color']
-const SPECIES_ROWS = ['Classification', 'Designation', 'Average height', 'Average lifespan', 'Language']
-const HOMEWORLD_ROWS = [
-  'Population',
-  'Terrain',
-  'Climate',
-  'Surface water',
-  'Diameter',
-  'Rotation period',
-  'Orbital period',
-  'Gravity',
-]
+interface CharacterDetailProps {
+  character: CharacterDetailData | null | undefined
+}
 
-function CharacterDetail() {
+function CharacterDetail({ character }: CharacterDetailProps) {
+  const attributeRows = [
+    { label: 'Birth year', value: character?.attributes.birthYear },
+    { label: 'Gender', value: character?.attributes.gender },
+    { label: 'Height', value: character?.attributes.height },
+    { label: 'Mass', value: character?.attributes.mass },
+    { label: 'Eye color', value: character?.attributes.eyeColor },
+    { label: 'Hair color', value: character?.attributes.hairColor },
+    { label: 'Skin color', value: character?.attributes.skinColor },
+  ]
+
+  const speciesRows = [
+    { label: 'Classification', value: character?.species?.classification },
+    { label: 'Designation', value: character?.species?.designation },
+    { label: 'Average height', value: character?.species?.averageHeight },
+    { label: 'Average lifespan', value: character?.species?.averageLifespan },
+    { label: 'Language', value: character?.species?.language },
+  ]
+
+  const homeworldRows = [
+    { label: 'Population', value: character?.homeworld?.population?.toLocaleString() },
+    { label: 'Terrain', value: character?.homeworld?.terrain },
+    { label: 'Climate', value: character?.homeworld?.climate },
+  ]
+
   return (
     <section className={styles.container}>
       <div className={styles.identity}>
@@ -24,13 +40,13 @@ function CharacterDetail() {
             <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
           </svg>
         </span>
-        <h2 className={styles.name}></h2>
+        <h2 className={styles.name}>{character?.name}</h2>
       </div>
 
       <div className={styles.panels}>
-        <DetailPanel title="Attributes" rows={ATTRIBUTE_ROWS} />
-        <DetailPanel title="Species" rows={SPECIES_ROWS} showHeading />
-        <DetailPanel title="Homeworld" rows={HOMEWORLD_ROWS} showHeading />
+        <DetailPanel title="Attributes" rows={attributeRows} />
+        <DetailPanel title="Species" rows={speciesRows} showHeading heading={character?.species?.name} />
+        <DetailPanel title="Homeworld" rows={homeworldRows} showHeading heading={character?.homeworld?.name} />
       </div>
     </section>
   )

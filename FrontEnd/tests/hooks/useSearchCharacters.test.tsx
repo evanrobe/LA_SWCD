@@ -1,10 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resetBusyCountForTests } from '../../src/hooks/globalBusyStore'
-import { useCharacters } from '../../src/hooks/useCharacters'
+import { useSearchCharacters } from '../../src/hooks/useSearchCharacters'
 import { clearGlobalError } from '../../src/errorReporting/globalErrorStore'
 
-describe('useCharacters', () => {
+describe('useSearchCharacters', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     resetBusyCountForTests()
@@ -22,7 +22,7 @@ describe('useCharacters', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    const { result } = renderHook(() => useCharacters())
+    const { result } = renderHook(() => useSearchCharacters())
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
@@ -38,7 +38,7 @@ describe('useCharacters', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    const { result, rerender } = renderHook(({ name }: { name?: string }) => useCharacters(name), {
+    const { result, rerender } = renderHook(({ name }: { name?: string }) => useSearchCharacters(name), {
       initialProps: { name: undefined as string | undefined },
     })
 

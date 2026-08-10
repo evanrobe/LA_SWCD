@@ -2,27 +2,67 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Home from '../../src/pages/Home/Home'
-import { useCharacters } from '../../src/hooks/useCharacters'
+import { useSearchCharacters } from '../../src/hooks/useSearchCharacters'
+import { useCharacterDetail } from '../../src/hooks/useCharacterDetail'
 
-vi.mock('../../src/hooks/useCharacters', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../src/hooks/useCharacters')>()
+vi.mock('../../src/hooks/useSearchCharacters', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/hooks/useSearchCharacters')>()
   return {
     ...actual,
-    useCharacters: vi.fn(),
+    useSearchCharacters: vi.fn(),
   }
 })
 
-const mockedUseCharacters = vi.mocked(useCharacters)
+vi.mock('../../src/hooks/useCharacterDetail', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/hooks/useCharacterDetail')>()
+  return {
+    ...actual,
+    useCharacterDetail: vi.fn(),
+  }
+})
+
+const mockedUseSearchCharacters = vi.mocked(useSearchCharacters)
+const mockedUseCharacterDetail = vi.mocked(useCharacterDetail)
 
 const CHARACTERS = [
   { id: '1', name: 'Luke Skywalker' },
   { id: '2', name: 'Leia Organa' },
 ]
 
+const LUKE_DETAIL = {
+  id: '1',
+  name: 'Luke Skywalker',
+  attributes: {
+    birthYear: '19BBY',
+    gender: 'male',
+    height: '172 cm',
+    mass: '77 kg',
+    hairColor: 'blond',
+    eyeColor: 'blue',
+    skinColor: 'fair',
+  },
+  species: {
+    name: 'Human',
+    classification: 'mammal',
+    designation: 'sentient',
+    averageHeight: '180 cm',
+    averageLifespan: '120 years',
+    language: 'Galactic Basic',
+  },
+  homeworld: {
+    name: 'Tatooine',
+    climate: 'arid',
+    terrain: 'desert',
+    population: 200000,
+  },
+}
+
 describe('Home', () => {
   beforeEach(() => {
-    mockedUseCharacters.mockReset()
-    mockedUseCharacters.mockReturnValue({ data: CHARACTERS } as ReturnType<typeof useCharacters>)
+    mockedUseSearchCharacters.mockReset()
+    mockedUseSearchCharacters.mockReturnValue({ data: CHARACTERS } as ReturnType<typeof useSearchCharacters>)
+    mockedUseCharacterDetail.mockReset()
+    mockedUseCharacterDetail.mockReturnValue({ data: LUKE_DETAIL } as ReturnType<typeof useCharacterDetail>)
   })
 
   it('renders the datapad header and search box', () => {
@@ -51,7 +91,7 @@ describe('Home', () => {
   })
 
   it('renders no characters when data has not loaded yet', () => {
-    mockedUseCharacters.mockReturnValue({ data: undefined } as ReturnType<typeof useCharacters>)
+    mockedUseSearchCharacters.mockReturnValue({ data: undefined } as ReturnType<typeof useSearchCharacters>)
 
     render(<Home />)
 
@@ -66,11 +106,29 @@ describe('Home', () => {
   })
 
   it('does not select anything when the list has no characters', () => {
-    mockedUseCharacters.mockReturnValue({ data: [] as typeof CHARACTERS } as ReturnType<typeof useCharacters>)
+    mockedUseSearchCharacters.mockReturnValue({ data: [] as typeof CHARACTERS } as ReturnType<typeof useSearchCharacters>)
 
     render(<Home />)
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('requests character detail for the selected character id', () => {
+    render(<Home />)
+
+    expect(mockedUseCharacterDetail).toHaveBeenLastCalledWith('1')
+  })
+
+  it('renders the selected character detail data', () => {
+    render(<Home />)
+
+    expect(screen.getByRole('heading', { name: 'Luke Skywalker' })).toBeInTheDocument()
+    expect(screen.getByText('19BBY')).toBeInTheDocument()
+    expect(screen.getByText('blond')).toBeInTheDocument()
+    expect(screen.getAllByText('Human')).not.toHaveLength(0)
+    expect(screen.getByText('sentient')).toBeInTheDocument()
+    expect(screen.getAllByText('Tatooine')).not.toHaveLength(0)
+    expect(screen.getByText('desert')).toBeInTheDocument()
   })
 
   it('allows selecting a single character from the list', async () => {
@@ -86,24 +144,26 @@ describe('Home', () => {
     await user.click(leiaButton)
     expect(leiaButton).toHaveAttribute('aria-pressed', 'true')
     expect(lukeButton).toHaveAttribute('aria-pressed', 'false')
+    expect(mockedUseCharacterDetail).toHaveBeenLastCalledWith('2')
 
     await user.click(lukeButton)
     expect(lukeButton).toHaveAttribute('aria-pressed', 'true')
     expect(leiaButton).toHaveAttribute('aria-pressed', 'false')
+    expect(mockedUseCharacterDetail).toHaveBeenLastCalledWith('1')
   })
 
-  it('debounces search box input before calling useCharacters with the new term', async () => {
+  it('debounces search box input before calling useSearchCharacters with the new term', async () => {
     const user = userEvent.setup()
 
     render(<Home />)
 
-    expect(mockedUseCharacters).toHaveBeenLastCalledWith('')
+    expect(mockedUseSearchCharacters).toHaveBeenLastCalledWith('')
 
     await user.type(screen.getByRole('searchbox', { name: 'Search characters' }), 'leia')
 
     // Still debouncing immediately after typing — no call with the full term yet.
-    expect(mockedUseCharacters).not.toHaveBeenCalledWith('leia')
+    expect(mockedUseSearchCharacters).not.toHaveBeenCalledWith('leia')
 
-    await waitFor(() => expect(mockedUseCharacters).toHaveBeenLastCalledWith('leia'), { timeout: 1000 })
+    await waitFor(() => expect(mockedUseSearchCharacters).toHaveBeenLastCalledWith('leia'), { timeout: 1000 })
   })
 })

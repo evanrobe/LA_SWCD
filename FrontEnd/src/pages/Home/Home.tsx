@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { useCharacters } from '../../hooks/useCharacters'
+import { useSearchCharacters } from '../../hooks/useSearchCharacters'
+import { useCharacterDetail } from '../../hooks/useCharacterDetail'
 import DatapadHeader from './components/DatapadHeader'
 import CharacterList from './components/CharacterList'
 import CharacterDetail from './components/CharacterDetail'
@@ -13,12 +14,14 @@ const SEARCH_DEBOUNCE_MS = 300
 function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm] = useDebounce(searchTerm, SEARCH_DEBOUNCE_MS)
-  const { data } = useCharacters(debouncedSearchTerm)
+  const { data } = useSearchCharacters(debouncedSearchTerm)
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null)
 
   useEffect(() => {
     setSelectedCharacterId(data && data.length > 0 ? data[0].id : null)
   }, [data])
+
+  const { data: selectedCharacter } = useCharacterDetail(selectedCharacterId)
 
   return (
     <main className={styles.page}>
@@ -26,7 +29,7 @@ function Home() {
 
       <div className={styles.charactersRow}>
         <CharacterList characters={data ?? []} selectedId={selectedCharacterId} onSelect={setSelectedCharacterId} />
-        <CharacterDetail />
+        <CharacterDetail character={selectedCharacter} />
       </div>
 
       <FilmsSection />

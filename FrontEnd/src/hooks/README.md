@@ -1,6 +1,6 @@
 # Hooks
 
-Component-facing data hooks — the only thing components/pages should import to get data. One hook per resource, e.g. `useCharacters`.
+Component-facing data hooks — the only thing components/pages should import to get data. One hook per resource, e.g. `useSearchCharacters`.
 
 This folder is deliberately **not** under `src/api/`. A hook here calls into `src/services/`, never into `src/api/<x>Api.ts` directly — living outside `api/` makes that boundary visible in the import path itself, not just in a convention someone has to remember.
 
@@ -15,7 +15,8 @@ This app does not use TanStack Query (or any query-caching library). Earlier ite
 - **`performActionWithTimeout.ts`** — the generic core. Runs any async action (`(signal) => Promise<T>`) and aborts it if it doesn't resolve within a timeout (10s default). Not API-specific — it doesn't know what it's running, only that it should be cancelled if it takes too long.
 - **`globalBusyStore.ts`** / **`useIsBusy.ts`** — a plain module-level counter (`useSyncExternalStore`, same pattern as `errorReporting/globalErrorStore.ts`) tracking how many actions are currently in flight, app-wide. `GlobalLoadingBoundary` reads it to decide whether to block the UI.
 - **`useServiceAction.ts`** — the generic hook every read hook should be built on: `useServiceAction(action, deps, options?)`. `deps` is a plain React dependency list (same idea as `useEffect`'s) that decides when to re-run — no query key, nothing to accidentally collide with another hook. On each run it: increments the busy counter, calls `action` through `performActionWithTimeout`, retries on failure (1 retry, 1s delay, by default), decrements the busy counter when settled, and on final failure reports to `errorReporting/globalErrorStore` (which drives `ErrorDialog`). If the component unmounts or `deps` change mid-flight, the in-flight action is aborted and its result is ignored. There's no `useServiceMutation` yet — add one, built on the same `performActionWithTimeout` core, if/when a write operation is needed.
-- **`useCharacters.ts`** — the actual domain hook a component uses. Thin: just binds `characterService.searchCharacters` and its `name` dependency into `useServiceAction`.
+- **`useSearchCharacters.ts`** — the actual domain hook a component uses. Thin: just binds `characterService.searchCharacters` and its `name` dependency into `useServiceAction`.
+- **`useCharacterDetail.ts`** — same shape, bound to `characterService.getCharacterDetail` and an `id` dependency; resolves to `null` without calling the service when `id` is `null` (nothing selected).
 
 ```ts
 // hooks/useThing.ts

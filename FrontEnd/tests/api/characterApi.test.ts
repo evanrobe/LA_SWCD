@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { searchCharacters } from '../../src/api/characterApi'
+import { searchCharacters, getCharacterDetail } from '../../src/api/characterApi'
 
 describe('characterApi.searchCharacters', () => {
   afterEach(() => {
@@ -48,6 +48,46 @@ describe('characterApi.searchCharacters', () => {
     const controller = new AbortController()
 
     await searchCharacters('luke', controller.signal)
+
+    expect(capturedSignal).toBe(controller.signal)
+  })
+})
+
+describe('characterApi.getCharacterDetail', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('requests the character-by-id endpoint with an encoded id', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await getCharacterDetail('1')
+
+    expect(fetchMock).toHaveBeenCalledWith('/api/v1/characters/1', expect.anything())
+  })
+
+  it('returns the parsed character detail', async () => {
+    const detail = { id: '1', name: 'Luke Skywalker', attributes: {}, species: null, homeworld: null }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(detail) }))
+
+    const result = await getCharacterDetail('1')
+
+    expect(result).toEqual(detail)
+  })
+
+  it('passes the abort signal through to the underlying request', async () => {
+    let capturedSignal: AbortSignal | undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((_url: string, init?: RequestInit) => {
+        capturedSignal = init?.signal ?? undefined
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+      }),
+    )
+    const controller = new AbortController()
+
+    await getCharacterDetail('1', controller.signal)
 
     expect(capturedSignal).toBe(controller.signal)
   })

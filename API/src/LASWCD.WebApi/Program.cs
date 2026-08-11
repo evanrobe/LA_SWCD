@@ -1,6 +1,6 @@
-using LASWCD.CrossCutting.Extensions;
 using LASWCD.Infrastructure.Extensions;
 using LASWCD.Managers.Extensions;
+using LASWCD.WebApi.Middleware;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -18,14 +19,13 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Clean architecture layer registrations.
-builder.Services.AddCrossCuttingServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddManagers();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseCrossCutting();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Enabled in all environments (including the production container) so the API stays self-documenting
 // wherever it's deployed, not just in local development.

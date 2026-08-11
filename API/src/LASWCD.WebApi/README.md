@@ -5,8 +5,7 @@ ASP.NET Core Web API for the LA SWCD project. Part of a clean-architecture solut
 - `LASWCD.Domain` — entities and abstractions (e.g. `ISwapiClient`)
 - `LASWCD.Managers` — application/business logic
 - `LASWCD.Infrastructure` — external integrations (e.g. SWAPI HTTP client)
-- `LASWCD.CrossCutting` — cross-cutting concerns (e.g. global exception handling)
-- `LASWCD.WebApi` — this project; controllers and composition root
+- `LASWCD.WebApi` — this project; controllers, composition root, and hosting concerns (e.g. global exception handling middleware)
 
 ## Prerequisites
 

@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LASWCD.Managers\LASWCD.Managers.csproj" />
-    <ProjectReference Include="..\LASWCD.CrossCutting\LASWCD.CrossCutting.csproj" />
     <ProjectReference Include="..\LASWCD.Domain\LASWCD.Domain.csproj" />
     <ProjectReference Include="..\LASWCD.Infrastructure\LASWCD.Infrastructure.csproj" />
   </ItemGroup>

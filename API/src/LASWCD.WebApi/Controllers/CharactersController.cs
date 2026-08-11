@@ -17,6 +17,11 @@ public class CharactersController(ICharacterManager characterManager) : Controll
     [HttpGet("{id}")]
     public async Task<ActionResult<CharacterDetail>> GetById(string id, CancellationToken cancellationToken)
     {
+        if (id == "55")
+        {
+            throw new Exception("Test exception! You passed in Adi Gallia!");
+        }
+        
         var character = await characterManager.GetByIdAsync(id, cancellationToken);
 
         if (character is null)

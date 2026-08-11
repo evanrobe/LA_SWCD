@@ -37,7 +37,7 @@
 }
 
 .item:hover {
-  background: #f4f3f6;
+  background: #afaeaf23;
 }
 
 .itemSelected {
@@ -50,5 +50,5 @@
   font-weight: 600;
   color: inherit;
   cursor: pointer;
-  background: #e5e4e7;
+  background: #ececee8e;
 }

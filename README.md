@@ -20,6 +20,18 @@ This is the only supported way to run the whole app with a single command —
 the built image serves the frontend and the API from one ASP.NET Core
 process, so nothing besides Docker needs to be installed on the host.
 
+***Important***
+Ensure that the user you build and run with is in the docker group:
+```
+usermod -aG docker $YOUR_USER_HERE
+```
+
+You will either need to log-out/log-in or just issue (as the user you are running as)
+```
+newgrp docker
+```
+
+Alternative is to just run the commands as root.
 ```
 docker build -t laswcd .
 docker run -p 8080:8080 laswcd

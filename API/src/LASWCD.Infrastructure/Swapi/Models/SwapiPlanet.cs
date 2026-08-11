@@ -1,3 +1,4 @@
+// Raw JSON shape of a SWAPI "planets" resource, deserialized straight off the wire.
 using System.Text.Json.Serialization;
 
 namespace LASWCD.Infrastructure.Swapi.Models;

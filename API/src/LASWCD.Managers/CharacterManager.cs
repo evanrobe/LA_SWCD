@@ -3,10 +3,13 @@ using LASWCD.Domain.Interfaces;
 using LASWCD.Managers.Interfaces;
 using LASWCD.Managers.Models;
 
+// Application/use-case layer: composes SWAPI data into the shapes the API exposes.
 namespace LASWCD.Managers;
 
+/// <summary>Searches characters and builds the composed character-detail view (attributes, species, homeworld, starships).</summary>
 public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
 {
+    /// <summary>Gets characters whose name contains <paramref name="name"/> (case-insensitive), sorted by name, or all characters if <paramref name="name"/> is empty.</summary>
     public async Task<IEnumerable<Models.Character>> SearchAsync(string? name, CancellationToken cancellationToken = default)
     {
         var people = await swapiClient.GetPeopleAsync(cancellationToken);
@@ -21,6 +24,7 @@ public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
             .Select(person => new Models.Character { Id = person.Id, Name = person.Name });
     }
 
+    /// <summary>Gets the composed detail view for a character by id (fetching species/homeworld/starships concurrently), or null if the character doesn't exist.</summary>
     public async Task<CharacterDetail?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         var person = await swapiClient.GetPersonAsync(id, cancellationToken);

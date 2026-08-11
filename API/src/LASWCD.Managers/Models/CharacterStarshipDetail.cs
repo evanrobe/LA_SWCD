@@ -1,5 +1,7 @@
+// Response shape for one of a character's starships, as returned by the API.
 namespace LASWCD.Managers.Models;
 
+/// <summary>A starship piloted by a character, display-formatted (e.g. crew/passengers parsed to numbers).</summary>
 public class CharacterStarshipDetail
 {
     public required string Id { get; set; }

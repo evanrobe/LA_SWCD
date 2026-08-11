@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 
+// Global catch-all for unhandled exceptions anywhere later in the request pipeline.
 namespace LASWCD.WebApi.Middleware;
 
+/// <summary>Logs unhandled exceptions and converts them into a generic 500 ProblemDetails response.</summary>
 public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {
+    /// <summary>Runs the rest of the pipeline, catching and translating any unhandled exception into a JSON error response.</summary>
     public async Task InvokeAsync(HttpContext context)
     {
         try

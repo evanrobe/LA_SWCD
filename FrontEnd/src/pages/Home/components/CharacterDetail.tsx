@@ -1,3 +1,4 @@
+// The profile panel: selected character's identity plus attributes/species/homeworld tables.
 import type { CharacterDetail as CharacterDetailData } from '../../../api/types'
 import DetailPanel from './DetailPanel'
 import styles from './CharacterDetail.module.css'
@@ -6,6 +7,7 @@ interface CharacterDetailProps {
   character: CharacterDetailData | null | undefined
 }
 
+/** Renders the selected character's name, avatar, and attribute/species/homeworld detail panels. */
 function CharacterDetail({ character }: CharacterDetailProps) {
   const attributeRows = [
     { label: 'Birth year', value: character?.attributes.birthYear },

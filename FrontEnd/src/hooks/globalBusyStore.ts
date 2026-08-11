@@ -1,3 +1,5 @@
+// Module-level store (subscribable via useSyncExternalStore) counting in-flight service actions
+// app-wide; drives GlobalLoadingBoundary and preserves/restores focus around it going inert.
 type Listener = () => void
 
 let busyCount = 0
@@ -8,6 +10,7 @@ function emit(): void {
   listeners.forEach((listener) => listener())
 }
 
+/** Increments the busy count, capturing the currently focused element on the 0→1 transition. */
 export function incrementBusyCount(): void {
   // GlobalLoadingBoundary makes the whole app `inert` while busy, and the browser forcibly
   // blurs whatever's focused inside an element that becomes inert. Capture it here — before
@@ -19,16 +22,19 @@ export function incrementBusyCount(): void {
   emit()
 }
 
+/** Decrements the busy count (floored at 0). */
 export function decrementBusyCount(): void {
   busyCount = Math.max(0, busyCount - 1)
   emit()
 }
 
+/** Registers a listener to be called whenever the busy count changes; returns an unsubscribe function. */
 export function subscribeToBusyCount(listener: Listener): () => void {
   listeners.add(listener)
   return () => listeners.delete(listener)
 }
 
+/** Returns the current busy count. */
 export function getBusyCountSnapshot(): number {
   return busyCount
 }
@@ -42,6 +48,7 @@ export function takeElementFocusedBeforeBusy(): HTMLElement | null {
   return element
 }
 
+/** Resets the busy count and captured focus element; for use in test teardown only. */
 export function resetBusyCountForTests(): void {
   busyCount = 0
   elementFocusedBeforeBusy = null

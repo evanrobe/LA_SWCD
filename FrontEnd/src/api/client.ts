@@ -1,5 +1,7 @@
+// Low-level fetch wrapper shared by every api/*Api.ts module.
 const baseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
 
+/** Thrown by apiGet when the response is not ok; carries the HTTP status code. */
 export class ApiError extends Error {
   readonly status: number
 
@@ -10,6 +12,7 @@ export class ApiError extends Error {
   }
 }
 
+/** Issues a GET request against the API and parses the JSON response, throwing ApiError on failure. */
 export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, { signal })
 

@@ -1,5 +1,7 @@
+// Response shape for a character's homeworld, as returned by the API.
 namespace LASWCD.Managers.Models;
 
+/// <summary>A character's homeworld, display-formatted (e.g. population parsed, units appended).</summary>
 public class CharacterHomeworldDetail
 {
     public required string Name { get; set; }

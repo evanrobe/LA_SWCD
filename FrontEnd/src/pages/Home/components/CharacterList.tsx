@@ -1,3 +1,4 @@
+// Scrollable list of search results; clicking a character selects it.
 import type { Character } from '../../../api/types'
 import styles from './CharacterList.module.css'
 
@@ -7,6 +8,7 @@ interface CharacterListProps {
   onSelect: (id: string) => void
 }
 
+/** Renders characters as selectable buttons, highlighting the currently selected one. */
 function CharacterList({ characters, selectedId, onSelect }: CharacterListProps) {
   return (
     <section className={styles.container}>

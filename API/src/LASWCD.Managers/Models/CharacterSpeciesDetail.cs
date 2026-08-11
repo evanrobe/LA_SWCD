@@ -1,5 +1,7 @@
+// Response shape for a character's species, as returned by the API.
 namespace LASWCD.Managers.Models;
 
+/// <summary>A character's species, display-formatted (e.g. units appended to numeric fields).</summary>
 public class CharacterSpeciesDetail
 {
     public required string Name { get; set; }

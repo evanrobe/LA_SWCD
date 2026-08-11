@@ -1,7 +1,9 @@
+// Modal shown app-wide when a service action fails unrecoverably; prompts the user to reload.
 import { clearGlobalError } from '../errorReporting/globalErrorStore'
 import { useGlobalError } from '../errorReporting/useGlobalError'
 import styles from './ErrorDialog.module.css'
 
+/** Renders nothing unless the global error flag is set, then shows a reload prompt. */
 function ErrorDialog() {
   const hasError = useGlobalError()
 

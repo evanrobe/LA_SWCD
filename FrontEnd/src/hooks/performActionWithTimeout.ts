@@ -1,5 +1,7 @@
+// Generic timeout/cancellation wrapper for any async action; the core useServiceAction builds on.
 export const DEFAULT_ACTION_TIMEOUT_MS = 10_000
 
+/** Runs `action`, aborting it if it doesn't settle within `timeoutMs` or if `outerSignal` aborts first. */
 export async function performActionWithTimeout<T>(
   action: (signal: AbortSignal) => Promise<T>,
   outerSignal: AbortSignal,

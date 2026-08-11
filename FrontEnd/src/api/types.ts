@@ -1,8 +1,12 @@
+// Shapes returned by the LASWCD Web API's character endpoints.
+
+/** A character search result: just enough to list and select a character. */
 export interface Character {
   id: string
   name: string
 }
 
+/** A character's display-formatted physical attributes. */
 export interface CharacterAttributes {
   birthYear: string | null
   gender: string | null
@@ -13,6 +17,7 @@ export interface CharacterAttributes {
   skinColor: string | null
 }
 
+/** A character's species. */
 export interface CharacterSpecies {
   name: string
   classification: string | null
@@ -22,6 +27,7 @@ export interface CharacterSpecies {
   language: string | null
 }
 
+/** A character's homeworld. */
 export interface CharacterHomeworld {
   name: string
   climate: string | null
@@ -34,6 +40,7 @@ export interface CharacterHomeworld {
   gravity: string | null
 }
 
+/** A starship piloted by a character. */
 export interface CharacterStarship {
   id: string
   name: string
@@ -44,6 +51,7 @@ export interface CharacterStarship {
   manufacturer: string | null
 }
 
+/** A character's full composed detail view, as returned by GET /api/v1/characters/{id}. */
 export interface CharacterDetail {
   id: string
   name: string

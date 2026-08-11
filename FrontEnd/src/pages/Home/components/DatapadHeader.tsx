@@ -1,3 +1,4 @@
+// Page header: app title and the character search input.
 import styles from './DatapadHeader.module.css'
 
 interface DatapadHeaderProps {
@@ -5,6 +6,7 @@ interface DatapadHeaderProps {
   onSearchTermChange: (value: string) => void
 }
 
+/** Renders the page title and a controlled search input. */
 function DatapadHeader({ searchTerm, onSearchTermChange }: DatapadHeaderProps) {
   return (
     <header className={styles.header}>

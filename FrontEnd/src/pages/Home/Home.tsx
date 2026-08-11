@@ -1,3 +1,4 @@
+// The main (and only) page: search/select a character and view their composed detail.
 import { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useSearchCharacters } from '../../hooks/useSearchCharacters'
@@ -12,6 +13,7 @@ import styles from './Home.module.css'
 
 const SEARCH_DEBOUNCE_MS = 300
 
+/** Search/select a character, then show their attributes, species, homeworld, films, and starships. */
 function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm] = useDebounce(searchTerm, SEARCH_DEBOUNCE_MS)

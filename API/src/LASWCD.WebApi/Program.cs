@@ -1,3 +1,5 @@
+// Composition root: builds and configures the ASP.NET Core host that serves both the API and the
+// published React SPA from a single process.
 using LASWCD.Infrastructure.Extensions;
 using LASWCD.Managers.Extensions;
 using LASWCD.WebApi.Middleware;

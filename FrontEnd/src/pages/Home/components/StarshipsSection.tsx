@@ -1,3 +1,4 @@
+// Selected character's starships: a thumbnail plus crew/passengers and model/manufacturer per row.
 import type { CharacterStarship } from '../../../api/types'
 import styles from './StarshipsSection.module.css'
 
@@ -5,6 +6,7 @@ interface StarshipsSectionProps {
   starships: CharacterStarship[]
 }
 
+/** Renders one row per starship in a fixed-height, scrollable, bordered box. */
 function StarshipsSection({ starships }: StarshipsSectionProps) {
   return (
     <section className={styles.container}>

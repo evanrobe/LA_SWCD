@@ -1,3 +1,5 @@
+// Generic data-fetching hook every domain hook (useSearchCharacters, useCharacterDetail, ...) is
+// built on: timeout/cancellation, retry, the global busy spinner, and global error reporting.
 import { useEffect, useRef, useState, type DependencyList } from 'react'
 import { performActionWithTimeout, DEFAULT_ACTION_TIMEOUT_MS } from './performActionWithTimeout'
 import { incrementBusyCount, decrementBusyCount } from './globalBusyStore'
@@ -24,6 +26,7 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+/** Runs `action` whenever `deps` change, with retry/timeout, tracking loading/error state and the global busy count. */
 export function useServiceAction<T>(
   action: (signal: AbortSignal) => Promise<T>,
   deps: DependencyList,

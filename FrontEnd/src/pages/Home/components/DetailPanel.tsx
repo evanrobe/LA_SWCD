@@ -1,5 +1,7 @@
+// Reusable labeled-rows panel used for each of Attributes/Species/Homeworld in CharacterDetail.
 import styles from './DetailPanel.module.css'
 
+/** A single label/value row within a DetailPanel. */
 export interface DetailRow {
   label: string
   value?: string | null
@@ -12,6 +14,7 @@ interface DetailPanelProps {
   heading?: string | null
 }
 
+/** A titled box with an optional heading line and a table of label/value rows. */
 function DetailPanel({ title, rows, showHeading, heading }: DetailPanelProps) {
   return (
     <div className={styles.panel}>

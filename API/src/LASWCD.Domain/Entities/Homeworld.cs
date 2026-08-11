@@ -1,5 +1,7 @@
+// Domain representation of a SWAPI planet, as a character's homeworld.
 namespace LASWCD.Domain.Entities;
 
+/// <summary>A planet's raw SWAPI attributes.</summary>
 public class Homeworld
 {
     public required string Name { get; set; }

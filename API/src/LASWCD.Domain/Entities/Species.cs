@@ -1,5 +1,7 @@
+// Domain representation of a SWAPI species, as a character's species.
 namespace LASWCD.Domain.Entities;
 
+/// <summary>A species' raw SWAPI attributes.</summary>
 public class Species
 {
     public required string Name { get; set; }

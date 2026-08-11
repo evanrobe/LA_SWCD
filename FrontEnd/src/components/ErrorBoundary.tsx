@@ -1,3 +1,4 @@
+// Catches rendering errors in its subtree and shows a fallback instead of a blank/crashed page.
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface ErrorBoundaryProps {
@@ -9,6 +10,7 @@ interface ErrorBoundaryState {
 }
 
 // React has no hook equivalent for error boundaries; they must be class components.
+/** Renders a fallback message instead of crashing when a child component throws while rendering. */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false }
 

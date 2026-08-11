@@ -8,10 +8,12 @@ using LASWCD.Infrastructure.Swapi.Models;
 namespace LASWCD.Infrastructure.Swapi;
 
 // swapi.info serves a static, unfiltered dump per resource; there is no query-param search support.
+/// <summary>HTTP-backed <see cref="ISwapiClient"/> that fetches and maps SWAPI resources to domain entities.</summary>
 public class SwapiClient(HttpClient httpClient) : ISwapiClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
+    /// <summary>Gets every character.</summary>
     public async Task<IEnumerable<Character>> GetPeopleAsync(CancellationToken cancellationToken = default)
     {
         var people = await GetOrDefaultAsync<List<SwapiPerson>>("people/", cancellationToken);
@@ -19,6 +21,7 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
         return people?.Select(ToCharacter) ?? [];
     }
 
+    /// <summary>Gets a single character by id, or null if not found.</summary>
     public async Task<Character?> GetPersonAsync(string id, CancellationToken cancellationToken = default)
     {
         var person = await GetOrDefaultAsync<SwapiPerson>($"people/{id}/", cancellationToken);
@@ -26,6 +29,7 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
         return person is null ? null : ToCharacter(person);
     }
 
+    /// <summary>Gets a species by its resource URL, or null if not found.</summary>
     public async Task<Species?> GetSpeciesAsync(string url, CancellationToken cancellationToken = default)
     {
         var species = await GetOrDefaultAsync<SwapiSpecies>(url, cancellationToken);
@@ -43,6 +47,7 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
             };
     }
 
+    /// <summary>Gets a homeworld by its resource URL, or null if not found.</summary>
     public async Task<Homeworld?> GetHomeworldAsync(string url, CancellationToken cancellationToken = default)
     {
         var planet = await GetOrDefaultAsync<SwapiPlanet>(url, cancellationToken);
@@ -63,6 +68,7 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
             };
     }
 
+    /// <summary>Gets a starship by its resource URL, or null if not found.</summary>
     public async Task<Starship?> GetStarshipAsync(string url, CancellationToken cancellationToken = default)
     {
         var starship = await GetOrDefaultAsync<SwapiStarship>(url, cancellationToken);

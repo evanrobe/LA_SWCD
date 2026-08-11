@@ -1,5 +1,7 @@
+// Response shape for a character's basic attributes, as returned by the API.
 namespace LASWCD.Managers.Models;
 
+/// <summary>A character's display-formatted physical attributes (e.g. height with units).</summary>
 public class CharacterAttributes
 {
     public string? BirthYear { get; set; }

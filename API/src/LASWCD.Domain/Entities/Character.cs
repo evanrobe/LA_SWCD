@@ -1,5 +1,7 @@
+// Domain representation of a SWAPI character, including raw attribute strings and related-resource URLs.
 namespace LASWCD.Domain.Entities;
 
+/// <summary>A Star Wars character and its raw SWAPI attributes.</summary>
 public class Character
 {
     public required string Id { get; set; }

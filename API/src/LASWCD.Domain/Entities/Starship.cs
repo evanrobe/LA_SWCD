@@ -1,5 +1,7 @@
+// Domain representation of a SWAPI starship piloted by a character.
 namespace LASWCD.Domain.Entities;
 
+/// <summary>A starship's raw SWAPI attributes.</summary>
 public class Starship
 {
     public required string Id { get; set; }

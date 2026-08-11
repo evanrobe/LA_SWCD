@@ -1,9 +1,11 @@
+// Generic empty placeholder section (currently used for "Vehicles", not yet backed by API data).
 import styles from './CraftSection.module.css'
 
 interface CraftSectionProps {
   title: string
 }
 
+/** An empty titled, bordered list placeholder for a not-yet-implemented section. */
 function CraftSection({ title }: CraftSectionProps) {
   return (
     <section className={styles.container}>

@@ -127,7 +127,23 @@ assumed rather than left ambiguous:
 - A section with no data shows "No data found" (this can happen for
   Species). A character with more than one SWAPI species uses the first
   one.
-- Desktop-only; no inputs besides the search box and character list.
+- Desktop layout only
+- No inputs besides the search box and character list handle user input
+
+### Running the tests
+
+- **Backend**
+```
+cd API
+dotnet test
+```
+
+- **Frontend**
+
+```
+cd FrontEnd
+npm run test 
+```
 
 ### Technical approach & architecture
 

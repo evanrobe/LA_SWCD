@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #57545e;
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d5d4d8;
+  border-radius: 6px;
+  height: 220px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.item {
+  display: flex;
+  flex-shrink: 0;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #efeef1;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.thumbnail {
+  display: flex;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border: 1px solid #d5d4d8;
+  border-radius: 4px;
+}
+
+.thumbnailIcon {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #d5d4d8;
+  stroke-width: 1;
+}
+
+/* A single grid shared by the heading and the field rows below it, so the classification lines
+   up in the same column as the Crew/Passengers and Model/Manufacturer values, not just next to
+   the name. ".heading" and ".rows" use display:contents so their children (name/classification,
+   the dt/dd pairs) become direct items of this grid instead of being boxed into their own row. */
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 8px;
+  row-gap: 4px;
+  align-items: baseline;
+  justify-content: start;
+  min-width: 0;
+}
+
+.heading {
+  display: contents;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.classification {
+  font-size: 14px;
+  color: #57545e;
+}
+
+.rows {
+  display: contents;
+}
+
+.rows dt {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.rows dd {
+  margin: 0;
+  font-size: 14px;
+}

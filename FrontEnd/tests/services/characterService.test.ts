@@ -33,6 +33,7 @@ describe('characterService.getCharacterDetail', () => {
       },
       species: null,
       homeworld: null,
+      starships: [],
     }
     const apiSpy = vi.spyOn(characterApi, 'getCharacterDetail').mockResolvedValue(detail)
     const controller = new AbortController()

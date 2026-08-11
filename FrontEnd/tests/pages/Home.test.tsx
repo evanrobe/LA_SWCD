@@ -60,6 +60,17 @@ const LUKE_DETAIL = {
     orbitalPeriod: '304 d',
     gravity: '1 standard',
   },
+  starships: [
+    {
+      id: '12',
+      name: 'X-wing',
+      classification: 'Starfighter',
+      crew: 1,
+      passengers: 0,
+      model: 'T-65 X-wing',
+      manufacturer: 'Incom Corporation',
+    },
+  ],
 }
 
 describe('Home', () => {
@@ -134,6 +145,8 @@ describe('Home', () => {
     expect(screen.getByText('sentient')).toBeInTheDocument()
     expect(screen.getAllByText('Tatooine')).not.toHaveLength(0)
     expect(screen.getByText('desert')).toBeInTheDocument()
+    expect(screen.getByText('X-wing')).toBeInTheDocument()
+    expect(screen.getByText('Starfighter')).toBeInTheDocument()
   })
 
   it('allows selecting a single character from the list', async () => {

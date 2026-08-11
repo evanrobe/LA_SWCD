@@ -33,6 +33,7 @@ const LUKE = {
     orbitalPeriod: '304 d',
     gravity: '1 standard',
   },
+  starships: [],
 }
 
 describe('CharacterDetail', () => {

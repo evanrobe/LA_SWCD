@@ -6,6 +6,7 @@ import DatapadHeader from './components/DatapadHeader'
 import CharacterList from './components/CharacterList'
 import CharacterDetail from './components/CharacterDetail'
 import FilmsSection from './components/FilmsSection'
+import StarshipsSection from './components/StarshipsSection'
 import CraftSection from './components/CraftSection'
 import styles from './Home.module.css'
 
@@ -35,7 +36,7 @@ function Home() {
       <FilmsSection />
 
       <div className={styles.craftRow}>
-        <CraftSection title="Starships" />
+        <StarshipsSection starships={selectedCharacter?.starships ?? []} />
         <CraftSection title="Vehicles" />
       </div>
     </main>

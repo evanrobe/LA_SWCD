@@ -34,10 +34,21 @@ export interface CharacterHomeworld {
   gravity: string | null
 }
 
+export interface CharacterStarship {
+  id: string
+  name: string
+  classification: string | null
+  crew: number | null
+  passengers: number | null
+  model: string | null
+  manufacturer: string | null
+}
+
 export interface CharacterDetail {
   id: string
   name: string
   attributes: CharacterAttributes
   species: CharacterSpecies | null
   homeworld: CharacterHomeworld | null
+  starships: CharacterStarship[]
 }

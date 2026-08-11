@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<ISwapiClient, SwapiClient>(client =>
         {
             client.BaseAddress = new Uri(swapiBaseUrl);
-        });
+        }).AddStandardResilienceHandler();
 
         return services;
     }

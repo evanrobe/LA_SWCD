@@ -37,11 +37,14 @@ public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
         var homeworldTask = person.HomeworldUrl is null
             ? Task.FromResult<Homeworld?>(null)
             : swapiClient.GetHomeworldAsync(person.HomeworldUrl, cancellationToken);
+        var starshipsTask = Task.WhenAll(
+            person.StarshipUrls.Select(url => swapiClient.GetStarshipAsync(url, cancellationToken)));
 
-        await Task.WhenAll(speciesTask, homeworldTask);
+        await Task.WhenAll(speciesTask, homeworldTask, starshipsTask);
 
         var species = speciesTask.Result;
         var homeworld = homeworldTask.Result;
+        var starships = starshipsTask.Result;
 
         return new CharacterDetail
         {
@@ -81,7 +84,20 @@ public class CharacterManager(ISwapiClient swapiClient) : ICharacterManager
                     RotationPeriod = WithUnit(homeworld.RotationPeriod, "hr"),
                     OrbitalPeriod = WithUnit(homeworld.OrbitalPeriod, "d"),
                     Gravity = homeworld.Gravity
-                }
+                },
+            Starships = starships
+                .Where(starship => starship is not null)
+                .Select(starship => new CharacterStarshipDetail
+                {
+                    Id = starship!.Id,
+                    Name = starship.Name,
+                    Classification = starship.Classification,
+                    Crew = int.TryParse(starship.Crew, out var crew) ? crew : null,
+                    Passengers = int.TryParse(starship.Passengers, out var passengers) ? passengers : null,
+                    Model = starship.Model,
+                    Manufacturer = starship.Manufacturer
+                })
+                .ToList()
         };
     }
 

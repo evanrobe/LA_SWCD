@@ -26,6 +26,7 @@ public class SwapiClientTests
           "gender": "male",
           "homeworld": "https://swapi.info/api/planets/1",
           "species": ["https://swapi.info/api/species/1"],
+          "starships": ["https://swapi.info/api/starships/12"],
           "url": "https://swapi.info/api/people/1"
         }
         """;
@@ -94,6 +95,19 @@ public class SwapiClientTests
     }
 
     [Fact]
+    public async Task GetPersonAsync_ReturnsPerson_WithStarshipUrls()
+    {
+        var handler = new StubHttpMessageHandler(HttpStatusCode.OK, PersonJson);
+        using var httpClient = new HttpClient(handler) { BaseAddress = new Uri("https://swapi.info/api/") };
+        var client = new SwapiClient(httpClient);
+
+        var result = await client.GetPersonAsync("1");
+
+        Assert.NotNull(result);
+        Assert.Equal(["https://swapi.info/api/starships/12"], result.StarshipUrls);
+    }
+
+    [Fact]
     public async Task GetPersonAsync_ReturnsNull_WhenSwapiRespondsNotFound()
     {
         var handler = new StubHttpMessageHandler(HttpStatusCode.NotFound, string.Empty);
@@ -142,6 +156,37 @@ public class SwapiClientTests
         Assert.Equal("23", result.RotationPeriod);
         Assert.Equal("304", result.OrbitalPeriod);
         Assert.Equal("1 standard", result.Gravity);
+    }
+
+    private const string StarshipJson = """
+        {
+          "name": "X-wing",
+          "model": "T-65 X-wing",
+          "manufacturer": "Incom Corporation",
+          "crew": "1",
+          "passengers": "0",
+          "starship_class": "Starfighter",
+          "url": "https://swapi.info/api/starships/12"
+        }
+        """;
+
+    [Fact]
+    public async Task GetStarshipAsync_ReturnsStarship_MappingIdFromUrl()
+    {
+        var handler = new StubHttpMessageHandler(HttpStatusCode.OK, StarshipJson);
+        using var httpClient = new HttpClient(handler) { BaseAddress = new Uri("https://swapi.info/api/") };
+        var client = new SwapiClient(httpClient);
+
+        var result = await client.GetStarshipAsync("https://swapi.info/api/starships/12");
+
+        Assert.NotNull(result);
+        Assert.Equal("12", result.Id);
+        Assert.Equal("X-wing", result.Name);
+        Assert.Equal("Starfighter", result.Classification);
+        Assert.Equal("1", result.Crew);
+        Assert.Equal("0", result.Passengers);
+        Assert.Equal("T-65 X-wing", result.Model);
+        Assert.Equal("Incom Corporation", result.Manufacturer);
     }
 
     private class StubHttpMessageHandler(HttpStatusCode statusCode, string jsonResponse) : HttpMessageHandler

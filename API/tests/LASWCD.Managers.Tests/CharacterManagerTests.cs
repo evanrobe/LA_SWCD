@@ -83,7 +83,8 @@ public class CharacterManagerTests
             EyeColor = "blue",
             SkinColor = "fair",
             HomeworldUrl = "https://swapi.info/api/planets/1",
-            SpeciesUrls = ["https://swapi.info/api/species/1"]
+            SpeciesUrls = ["https://swapi.info/api/species/1"],
+            StarshipUrls = ["https://swapi.info/api/starships/12", "https://swapi.info/api/starships/404"]
         };
         var human = new Species
         {
@@ -106,11 +107,23 @@ public class CharacterManagerTests
             OrbitalPeriod = "304",
             Gravity = "1 standard"
         };
+        var xwing = new Starship
+        {
+            Id = "12",
+            Name = "X-wing",
+            Classification = "Starfighter",
+            Crew = "1",
+            Passengers = "0",
+            Model = "T-65 X-wing",
+            Manufacturer = "Incom Corporation"
+        };
 
         var swapiClientMock = new Mock<ISwapiClient>();
         swapiClientMock.Setup(c => c.GetPersonAsync("1", It.IsAny<CancellationToken>())).ReturnsAsync(luke);
         swapiClientMock.Setup(c => c.GetSpeciesAsync(luke.SpeciesUrls[0], It.IsAny<CancellationToken>())).ReturnsAsync(human);
         swapiClientMock.Setup(c => c.GetHomeworldAsync(luke.HomeworldUrl!, It.IsAny<CancellationToken>())).ReturnsAsync(tatooine);
+        swapiClientMock.Setup(c => c.GetStarshipAsync(luke.StarshipUrls[0], It.IsAny<CancellationToken>())).ReturnsAsync(xwing);
+        swapiClientMock.Setup(c => c.GetStarshipAsync(luke.StarshipUrls[1], It.IsAny<CancellationToken>())).ReturnsAsync((Starship?)null);
         var manager = new CharacterManager(swapiClientMock.Object);
 
         var result = await manager.GetByIdAsync("1");
@@ -144,17 +157,27 @@ public class CharacterManagerTests
         Assert.Equal("23 hr", result.Homeworld.RotationPeriod);
         Assert.Equal("304 d", result.Homeworld.OrbitalPeriod);
         Assert.Equal("1 standard", result.Homeworld.Gravity);
+
+        var starship = Assert.Single(result.Starships);
+        Assert.Equal("12", starship.Id);
+        Assert.Equal("X-wing", starship.Name);
+        Assert.Equal("Starfighter", starship.Classification);
+        Assert.Equal(1, starship.Crew);
+        Assert.Equal(0, starship.Passengers);
+        Assert.Equal("T-65 X-wing", starship.Model);
+        Assert.Equal("Incom Corporation", starship.Manufacturer);
     }
 
     [Fact]
-    public async Task GetByIdAsync_LeavesSpeciesAndHomeworldNull_WhenPersonHasNoUrlsForThem()
+    public async Task GetByIdAsync_LeavesSpeciesHomeworldAndStarshipsEmpty_WhenPersonHasNoUrlsForThem()
     {
         var droid = new Character
         {
             Id = "2",
             Name = "C-3PO",
             HomeworldUrl = null,
-            SpeciesUrls = []
+            SpeciesUrls = [],
+            StarshipUrls = []
         };
 
         var swapiClientMock = new Mock<ISwapiClient>();
@@ -166,7 +189,9 @@ public class CharacterManagerTests
         Assert.NotNull(result);
         Assert.Null(result.Species);
         Assert.Null(result.Homeworld);
+        Assert.Empty(result.Starships);
         swapiClientMock.Verify(c => c.GetSpeciesAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         swapiClientMock.Verify(c => c.GetHomeworldAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        swapiClientMock.Verify(c => c.GetStarshipAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

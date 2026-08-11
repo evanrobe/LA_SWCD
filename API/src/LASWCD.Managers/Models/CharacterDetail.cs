@@ -11,4 +11,6 @@ public class CharacterDetail
     public CharacterSpeciesDetail? Species { get; set; }
 
     public CharacterHomeworldDetail? Homeworld { get; set; }
+
+    public IReadOnlyList<CharacterStarshipDetail> Starships { get; set; } = [];
 }

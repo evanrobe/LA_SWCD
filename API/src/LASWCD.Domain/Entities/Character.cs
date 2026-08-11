@@ -23,4 +23,6 @@ public class Character
     public string? HomeworldUrl { get; set; }
 
     public IReadOnlyList<string> SpeciesUrls { get; set; } = [];
+
+    public IReadOnlyList<string> StarshipUrls { get; set; } = [];
 }

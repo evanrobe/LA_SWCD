@@ -11,4 +11,6 @@ public interface ISwapiClient
     Task<Species?> GetSpeciesAsync(string url, CancellationToken cancellationToken = default);
 
     Task<Homeworld?> GetHomeworldAsync(string url, CancellationToken cancellationToken = default);
+
+    Task<Starship?> GetStarshipAsync(string url, CancellationToken cancellationToken = default);
 }

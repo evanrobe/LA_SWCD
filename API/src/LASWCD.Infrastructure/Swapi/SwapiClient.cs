@@ -63,6 +63,24 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
             };
     }
 
+    public async Task<Starship?> GetStarshipAsync(string url, CancellationToken cancellationToken = default)
+    {
+        var starship = await GetOrDefaultAsync<SwapiStarship>(url, cancellationToken);
+
+        return starship is null
+            ? null
+            : new Starship
+            {
+                Id = ExtractId(starship.Url),
+                Name = starship.Name,
+                Classification = starship.StarshipClass,
+                Crew = starship.Crew,
+                Passengers = starship.Passengers,
+                Model = starship.Model,
+                Manufacturer = starship.Manufacturer
+            };
+    }
+
     private async Task<T?> GetOrDefaultAsync<T>(string requestUri, CancellationToken cancellationToken)
     {
         using var response = await httpClient.GetAsync(requestUri, cancellationToken);
@@ -77,9 +95,11 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
         return await response.Content.ReadFromJsonAsync<T>(JsonOptions, cancellationToken);
     }
 
+    private static string ExtractId(string url) => url.TrimEnd('/').Split('/').Last();
+
     private static Character ToCharacter(SwapiPerson person) => new()
     {
-        Id = person.Url.TrimEnd('/').Split('/').Last(),
+        Id = ExtractId(person.Url),
         Name = person.Name,
         BirthYear = person.BirthYear,
         Gender = person.Gender,
@@ -89,6 +109,7 @@ public class SwapiClient(HttpClient httpClient) : ISwapiClient
         EyeColor = person.EyeColor,
         SkinColor = person.SkinColor,
         HomeworldUrl = person.Homeworld,
-        SpeciesUrls = person.Species
+        SpeciesUrls = person.Species,
+        StarshipUrls = person.Starships
     };
 }

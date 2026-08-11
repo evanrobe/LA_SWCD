@@ -29,4 +29,6 @@ internal class SwapiPerson
     public string? Homeworld { get; set; }
 
     public List<string> Species { get; set; } = [];
+
+    public List<string> Starships { get; set; } = [];
 }

@@ -95,4 +95,104 @@ This starts the API (`http://localhost:5240`) and the Vite dev server
 (`http://localhost:5173`, proxying `/api` to the backend) and opens a
 browser. See `FrontEnd/README.md` and `API/src/LASWCD.WebApi/README.md` for
 running each side individually, plus their prerequisites (Node.js 24 LTS
-and the .NET 10 SDK respectively) and how to run their test suites.
+and the .NET 10 SDK respectively).
+
+## Running the tests
+
+```
+cd API && dotnet test          # backend: xUnit, one *.Tests project per src project
+cd FrontEnd && npm test        # frontend: Vitest + React Testing Library
+```
+
+## Submission notes
+
+### Assumptions
+
+The wireframe and tickets left several behaviors unspecified; these were
+assumed rather than left ambiguous:
+
+- The character list pre-populates with all characters on load, sorted
+  alphabetically, and is single-select.
+- The search box does a substring match only (no wildcards, no
+  autocomplete) and filters the list as you type.
+- Selecting a character populates every other panel with that character's
+  data. The first character in the (possibly re-filtered) list is
+  selected by default — including after a search re-narrows the list,
+  rather than trying to preserve the prior selection.
+- If a search empties the list, or removes the selected character, the
+  detail panels go blank.
+- Films/starships/vehicles show only items belonging to the selected
+  character (no greyed-out entries); lists that overflow their box get a
+  scrollbar instead of resizing the box.
+- A section with no data shows "No data found" (this can happen for
+  Species). A character with more than one SWAPI species uses the first
+  one.
+- Desktop-only; no inputs besides the search box and character list.
+
+### Technical approach & architecture
+
+- **Backend** (`API/`): ASP.NET Core Web API in Clean Architecture —
+  `Domain` (entities + the `ISwapiClient` abstraction), `Infrastructure`
+  (the SWAPI HTTP client), `Managers` (business logic, mapping domain
+  entities to their own response models), `WebApi` (controllers,
+  composition root). Dependency injection throughout.
+- **Frontend** (`FrontEnd/`): React/TypeScript SPA layered
+  `api/` (fetch wrappers) → `services/` → `hooks/` (data fetching, all
+  built on one shared `useServiceAction`) → `components/`. Components
+  never call `fetch` directly.
+- **Deployment**: a single multi-stage Docker image — ASP.NET Core serves
+  the built SPA and the API from one process (see "Run it with Docker").
+
+### Architectural decisions & tradeoffs
+
+- The backend calls SWAPI itself, rather than the frontend calling it
+  directly — slower to build, but deliberately chosen to demonstrate
+  back-end engineering rather than skip it for speed.
+- Resiliency (retry with exponential backoff) is implemented at both the
+  API→SWAPI layer and the frontend→API layer.
+- Caching was considered and left out as gold-plating for this exercise's
+  scope, given the small, mostly-static SWAPI dataset.
+- Loading/error/empty states were treated as base work, not optional
+  polish, even though the tickets didn't call them out explicitly.
+
+### Technical risks & limitations
+
+- No pagination on the list endpoints — fine for SWAPI's size, would need
+  addressing for a larger dataset.
+- No caching — every character-detail view re-fetches species, homeworld,
+  and starships from SWAPI.
+- No authentication, and no encryption/data-security controls.
+- No front-end error telemetry (e.g. OpenTelemetry) — errors are only
+  logged to the console and surfaced via the global error dialog.
+- Test coverage could go deeper, e.g. explicitly asserting the
+  substring-vs-wildcard search assumption.
+
+### Features/improvements to prioritize with more time
+
+- Pagination and caching on the API.
+- Front-end error logging/telemetry.
+- Broader test coverage around the assumptions above.
+- With more people, splitting front-end and back-end work into separately
+  tracked issues.
+
+### AI-assisted development
+
+Built with Claude, including turning a layout description and a wireframe
+screenshot into the initial React structure. Without explicit
+architectural guardrails it tended to drift toward poor layering by
+default — e.g. business logic leaking into the API client layer, raw API
+models returned from manager methods — which needed direct correction and
+several rounds of iteration (the shared loading/retry/error-dialog hook
+in particular took repeated, detailed direction to get right). All output
+was reviewed and validated normally: reading every diff, and running the
+build/tests/app after each change.
+
+### Guidance for extending this application
+
+- New SWAPI resource: add a `Domain` entity + `ISwapiClient` method,
+  implement it in `SwapiClient`, then map it to its own model in
+  `CharacterManager` — never return a raw `Domain` entity from a manager
+  method. Species/homeworld/starships each follow this same pattern.
+- New frontend data: wire it through `api/` → `services/` → a `hooks/`
+  wrapper built on `useServiceAction`, the same way the existing hooks do.
+- Run `dotnet test` and `npm test` (see above) before committing.
